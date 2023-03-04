@@ -130,3 +130,10 @@ dmypy.json
 
 # .idea
 .idea
+
+
+# My ignors
+.vscode/
+migrations/
+media/
+# static/ оставил для ревью чтобы import_csv работал из коробки
