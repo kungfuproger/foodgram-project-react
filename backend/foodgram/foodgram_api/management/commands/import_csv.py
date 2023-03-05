@@ -1,6 +1,7 @@
 from csv import DictReader
 
 from django.core.management.base import BaseCommand
+
 from foodgram_api.models import Ingredient, Tag
 
 CSV_ROOT = "static/data/"

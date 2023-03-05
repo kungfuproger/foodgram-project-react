@@ -2,9 +2,12 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
+from core.models import CreatedModel
 
-class User(AbstractUser):
+
+class User(AbstractUser, CreatedModel):
     """Модель пользователя."""
+
     username_validator = UnicodeUsernameValidator()
 
     email = models.EmailField(
@@ -47,31 +50,43 @@ class User(AbstractUser):
     )
 
     class Meta:
-        ordering = ["-id"]
+        ordering = ["-created"]
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
 
     def __str__(self):
         return self.username
 
 
-class Subscribe(models.Model):
-    me = models.ForeignKey(
+class UserSubscription(CreatedModel):
+    """Подписки пользователя."""
+
+    subscriber = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_name="my_subscribes"
+        related_name="subscriptions",
     )
-    my_subscribe = models.ForeignKey(
+    publisher = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         blank=True,
         null=True,
-        related_name="subscribers"
+        related_name="subscribers",
     )
 
     class Meta:
+        ordering = ["-created"]
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
         constraints = [
             models.UniqueConstraint(
-                fields=["me", "my_subscribe"], name="subscribe"
-            )
+                fields=["subscriber", "publisher"],
+                name="Подписка уже оформлена",
+            ),
+            models.CheckConstraint(
+                check=~models.Q(subscriber=models.F("publisher")),
+                name="Нельзя подписаться на себя",
+            ),
         ]

@@ -1,18 +1,13 @@
-from django.urls import path, include
+from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .views import (
-    IngredientsViewSet,
-    TagsViewSet,
-    RecipesViewSet,
-    favorites,
-    download_shopping_cart,
-    in_cart,
-)
+
+from .views import download_shopping_cart, favorites, in_cart
+from .viewsets import IngredientsViewSet, RecipesViewSet, TagsViewSet
 
 router = DefaultRouter()
 router.register("ingredients", IngredientsViewSet)
 router.register("tags", TagsViewSet)
-router.register("recipes", RecipesViewSet)
+router.register("recipes", RecipesViewSet, basename="recipes")
 
 urlpatterns = [
     path("recipes/<int:id>/favorite/", favorites),

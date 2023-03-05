@@ -1,11 +1,9 @@
 import os
 
-# from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# SECRET_KEY = os.getenv("SECRET_KEY", default=get_random_secret_key())
 SECRET_KEY = "uyu!vn5483_7hb=@s$m%q1t29ish3r*+g_b$y88tqsz)c9hq(k"
 
 DEBUG = True
@@ -14,6 +12,7 @@ ALLOWED_HOSTS = []
 
 
 INSTALLED_APPS = [
+    "core.apps.CoreConfig",
     "foodgram_api.apps.FoodgramApiConfig",
     "users.apps.UsersConfig",
     "django.contrib.admin",
@@ -102,11 +101,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 AUTH_USER_MODEL = "users.User"
 
 REST_FRAMEWORK = {
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
     "DEFAULT_AUTHENTICATION_CLASSES": [
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 5,
+    "PAGE_SIZE": 6,
+    "PAGE_SIZE_QUERY_PARAM": "limit",
 }
 
 DJOSER = {
@@ -114,8 +117,13 @@ DJOSER = {
     "SERIALIZERS": {
         "user_create": "users.serializers.CustomUserCreateSerializer",
         "user": "users.serializers.CustomUserSerializer",
-        'current_user': "users.serializers.CustomUserSerializer",
+        "current_user": "users.serializers.CustomUserSerializer",
     },
+    "PERMISSIONS": {
+        "user": ["rest_framework.permissions.IsAuthenticated"],
+        "user_list": ["rest_framework.permissions.AllowAny"],
+    },
+    "HIDE_USERS": False,
 }
 
 LOGGING = {

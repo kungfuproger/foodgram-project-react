@@ -1,50 +1,38 @@
 import csv
-import io
 
 from django.http import HttpResponse
-from rest_framework import viewsets
+from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 
 from users.serializers import CustomRecipeSerializer
-from .models import Ingredient, Tag, Recipe
-from .serializers import IngredientSerializer, TagSerializer, RecipeSerializer
+from .models import Recipe
 
 
-class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Ingredient.objects.all()
-    serializer_class = IngredientSerializer
-
-
-class TagsViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
-
-
-class RecipesViewSet(viewsets.ModelViewSet):
-    queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
-
-    def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
-
-    def perform_update(self, serializer):
-        serializer.save(author=self.request.user)
+def add_or_remove_ralation(request, id, relation):
+    recipe = get_object_or_404(Recipe, id=id)
+    if request.method == "DELETE":
+        getattr(request.user, relation).remove(recipe)
+        return Response()
+    getattr(request.user, relation).add(recipe)
+    return Response(CustomRecipeSerializer(recipe).data, status=201)
 
 
 @api_view(["POST", "DELETE"])
 def favorites(request, id):
-    recipe = get_object_or_404(Recipe, id=id)
-    if request.method == "DELETE":
-        request.user.favorites.remove(recipe)
-        return Response()
-    request.user.favorites.add(recipe)
-    return Response(CustomRecipeSerializer(recipe).data, status=201)
+    """Добавить или удалить в избранное."""
+    return add_or_remove_ralation(request, id, "favorites")
+
+
+@api_view(["POST", "DELETE"])
+def in_cart(request, id):
+    """Добавить или удалить в корзину."""
+    return add_or_remove_ralation(request, id, "in_cart")
 
 
 @api_view(["GET"])
 def download_shopping_cart(request):
+    """Скачать список ингредиентов."""
     recipes = request.user.in_cart.all()
     ingredient_dict = {}
     for recipe in recipes:
@@ -62,9 +50,9 @@ def download_shopping_cart(request):
         list(ingredient_dict.values()), key=lambda x: x["name"]
     )
     response = HttpResponse(
-        content_type="text/csv",
+        content_type="text/plain",
         headers={
-            "Content-Disposition": 'attachment; filename="shopping_cart.csv"'
+            "Content-Disposition": 'attachment; filename="shopping_cart.txt"'
         },
     )
     writer = csv.writer(response)
@@ -72,19 +60,8 @@ def download_shopping_cart(request):
     n = int()
     for ingredient in ingredients:
         n += 1
-        writer.writerow(
-            [
-                f"{n}. {ingredient['name'].capitalize()} ({ingredient['measurement_unit']}) - {ingredient['amount']}"
-            ]
-        )
+        name = ingredient["name"].capitalize()
+        measurement_unit = ingredient["measurement_unit"]
+        amount = ingredient["amount"]
+        writer.writerow([f"{n}. {name} ({measurement_unit}) - {amount}"])
     return response
-
-
-@api_view(["POST", "DELETE"])
-def in_cart(request, id):
-    recipe = get_object_or_404(Recipe, id=id)
-    if request.method == "DELETE":
-        request.user.in_cart.remove(recipe)
-        return Response()
-    request.user.in_cart.add(recipe)
-    return Response(CustomRecipeSerializer(recipe).data, status=201)

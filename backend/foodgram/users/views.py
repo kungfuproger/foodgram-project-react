@@ -1,21 +1,33 @@
+from django.db import IntegrityError
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 
-from .serializers import UserRecipeListSerializer
-from .models import User, Subscribe
+from .models import User, UserSubscription
+from .serializers import UserRecipesSerializer
 
 
 class SubscribeViewSet(viewsets.ModelViewSet):
-    queryset = Subscribe.objects.all()
-    serializer_class = UserRecipeListSerializer
+    """
+    Представление системы подписки.
+    """
+
+    queryset = UserSubscription.objects.all()
+    serializer_class = UserRecipesSerializer
 
     @action(detail=False)
     def subscriptions(self, request):
-        subscribes = request.user.my_subscribes.all()  # добавить Prefect_related
+        subscribes = request.user.subscriptions.prefetch_related("publisher")
+        recipes_limit = int(request.query_params.get("recipes_limit"))
         serializer = self.get_serializer(
-            [sub.my_subscribe for sub in subscribes], many=True
+            [sub.publisher for sub in subscribes],
+            many=True,
+            context={
+                "request": request,
+                "recipes_limit": recipes_limit,
+            },
         )
         return Response(serializer.data)
 
@@ -24,21 +36,14 @@ class SubscribeViewSet(viewsets.ModelViewSet):
         target = User.objects.get(id=id)
         if request.method == "DELETE":
             get_object_or_404(
-                Subscribe, me=request.user, my_subscribe=target
+                UserSubscription, subscriber=request.user, publisher=target
             ).delete()
             return Response(status=204)
-        Subscribe.objects.get_or_create(me=request.user, my_subscribe=target)
+        try:
+            UserSubscription.objects.get_or_create(
+                subscriber=request.user, publisher=target
+            )
+        except IntegrityError as e:
+            raise ValidationError(e.args[0][25:])
         serializer = self.get_serializer(target)
         return Response(serializer.data)
-
-
-# @login_required
-# def profile_follow(request, username):
-#     user = request.user
-#     author = User.objects.get(username=username)
-#     if user != author:
-#         Follow.objects.get_or_create(
-#             user=user,
-#             author=author
-#         )
-#     return redirect('posts:follow_index')
