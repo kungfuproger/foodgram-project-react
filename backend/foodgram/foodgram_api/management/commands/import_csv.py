@@ -3,7 +3,7 @@
 Тут уже все настроено под проект и работает.
 В папке backend/foodgram/static/data проекта тестовые данные
     для моделей User, Ingredient, IngredientAmount, Recipe, Tag.
-Все что надо нажать, это:
+Все что надо нажать для импорта в БД, это:
 1. Создать и выполнить миграции
 2. Запустить |> python manage.py import_csv | 
 
