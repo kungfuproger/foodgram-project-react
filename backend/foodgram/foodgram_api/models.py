@@ -80,7 +80,11 @@ class Recipe(CreatedModel):
     )
     text = models.TextField("Описание", blank=False, null=False)
     ingredients = models.ManyToManyField(
-        IngredientAmount, related_name="recipes", verbose_name="Ингредиенты"
+        IngredientAmount,
+        related_name="recipes",
+        verbose_name="Ингредиенты",
+        blank=True,
+        null=True,
     )
     tags = models.ManyToManyField(Tag, verbose_name="Теги")
     cooking_time = models.IntegerField(
