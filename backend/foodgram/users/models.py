@@ -2,12 +2,9 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 
-from core.models import CreatedModel
 
-
-class User(AbstractUser, CreatedModel):
+class User(AbstractUser):
     """Модель пользователя."""
-
     username_validator = UnicodeUsernameValidator()
 
     email = models.EmailField(
@@ -50,7 +47,6 @@ class User(AbstractUser, CreatedModel):
     )
 
     class Meta:
-        ordering = ["-created"]
         verbose_name = "Пользователь"
         verbose_name_plural = "Пользователи"
 
@@ -58,9 +54,8 @@ class User(AbstractUser, CreatedModel):
         return self.username
 
 
-class UserSubscription(CreatedModel):
+class UserSubscription(models.Model):
     """Подписки пользователя."""
-
     subscriber = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -77,7 +72,6 @@ class UserSubscription(CreatedModel):
     )
 
     class Meta:
-        ordering = ["-created"]
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
         constraints = [

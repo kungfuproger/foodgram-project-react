@@ -1,6 +1,5 @@
 import os
 
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -12,9 +11,6 @@ ALLOWED_HOSTS = []
 
 
 INSTALLED_APPS = [
-    "core.apps.CoreConfig",
-    "foodgram_api.apps.FoodgramApiConfig",
-    "users.apps.UsersConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -24,6 +20,8 @@ INSTALLED_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "djoser",
+    "users.apps.UsersConfig",
+    "foodgram_api.apps.FoodgramApiConfig",
 ]
 
 MIDDLEWARE = [

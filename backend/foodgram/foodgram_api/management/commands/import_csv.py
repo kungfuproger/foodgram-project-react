@@ -28,20 +28,18 @@
 from csv import DictReader
 
 from django.core.management.base import BaseCommand
-
-from foodgram_api.models import Ingredient, IngredientAmount, Recipe, Tag
+from foodgram_api.models import IngredientAmount, IngredientUnit, Recipe, Tag
 from users.models import User
-
 
 CSV_ROOT = "static/data/"
 FILE_MODEL = {
-    "ingredients.csv": Ingredient,
+    "ingredients.csv": IngredientUnit,
     "tags.csv": Tag,
     "users.csv": User,
-    "ingredients_amount.csv": IngredientAmount,
     "recipes.csv": Recipe,
+    "ingredients_amount.csv": IngredientAmount,
 }
-FK_FIELDS = ["ingredient", "author"]
+FK_FIELDS = ["ingredient", "author", "recipe", "ingredient_unit"]
 M2M_FIELDS = {"ingredients": IngredientAmount}
 
 

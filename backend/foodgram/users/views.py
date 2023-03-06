@@ -10,10 +10,7 @@ from .serializers import UserRecipesSerializer
 
 
 class SubscribeViewSet(viewsets.ModelViewSet):
-    """
-    Представление системы подписки.
-    """
-
+    """Представление системы подписки."""
     queryset = UserSubscription.objects.all()
     serializer_class = UserRecipesSerializer
 

@@ -1,11 +1,9 @@
 from django.contrib import admin
 
-from .models import Ingredient, IngredientAmount, Recipe, Tag
+from .models import IngredientAmount, IngredientUnit, Recipe, Tag
 
 
-class IngredientAdmin(admin.ModelAdmin):
-    """Админка пользователей."""
-
+class IngredientUnitAdmin(admin.ModelAdmin):
     list_display = (
         "name",
         "measurement_unit",
@@ -14,8 +12,6 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    """Админка пользователей."""
-
     list_display = (
         "name",
         "color",
@@ -24,8 +20,6 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class RecipeAdmin(admin.ModelAdmin):
-    """Админка пользователей."""
-
     list_display = (
         "name",
         "author",
@@ -65,15 +59,13 @@ class RecipeAdmin(admin.ModelAdmin):
 
 
 class IngredientAmountAdmin(admin.ModelAdmin):
-    """Админка пользователей."""
-
     list_display = (
-        "ingredient",
+        "ingredient_unit",
         "amount",
     )
 
 
-admin.site.register(Ingredient, IngredientAdmin)
+admin.site.register(IngredientUnit, IngredientUnitAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(IngredientAmount, IngredientAmountAdmin)

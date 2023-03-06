@@ -6,10 +6,7 @@ from .models import User, UserSubscription
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
-    """
-    Сериализатор создания пользователя.
-    """
-
+    """Сериализатор создания пользователя."""
     id = serializers.IntegerField(read_only=True)
 
     class Meta(UserCreateSerializer.Meta):
@@ -25,10 +22,7 @@ class CustomUserCreateSerializer(UserCreateSerializer):
 
 
 class CustomUserSerializer(UserSerializer):
-    """
-    Сериализатор пользователя.
-    """
-
+    """Сериализатор пользователя."""
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta(UserSerializer.Meta):
@@ -53,8 +47,8 @@ class CustomUserSerializer(UserSerializer):
 
 class CustomRecipeSerializer(serializers.ModelSerializer):
     """
-    Кастомный сериализатор рецептов,
-    для сериализатора UserRecipeListSerializer.
+    Кастомный сериализатор.
+    Краткое представление рецептов.
     """
 
     class Meta:
@@ -64,8 +58,8 @@ class CustomRecipeSerializer(serializers.ModelSerializer):
 
 class UserRecipesSerializer(CustomUserSerializer):
     """
-    Сериализатор пользователя с рецептами, для системы подписок.
-    Возвращает пользователя и его рецепты.
+    Сериализатор для системы подписок.
+    Возвращает пользователя и кратко его рецепты.
     """
 
     recipes = serializers.SerializerMethodField()
