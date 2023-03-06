@@ -113,10 +113,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients = validated_data.get("ingredients")
         for ingredient_data in ingredients:
             ingredient_unit = ingredient_data.get("ingredient_unit")
-            amount = ingredient_data.get("amount")
-            IngredientAmount.objects.get_or_create(
-                recipe=instance, ingredient_unit=ingredient_unit, amount=amount
+            ingredient, _ = IngredientAmount.objects.get_or_create(
+                recipe=instance, ingredient_unit=ingredient_unit
             )
+            amount = ingredient_data.get("amount")
+            ingredient.amount = amount
+            ingredient.save()
         tags = validated_data.get("tags")
         instance.tags.set(tags)
         instance.save()
