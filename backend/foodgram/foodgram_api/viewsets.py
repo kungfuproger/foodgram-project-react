@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from users.serializers import CustomRecipeSerializer
-from .models import Favorite, IngredientUnit, Recipe, Shopping_cart, Tag
+from .models import Favorite, IngredientUnit, Recipe, ShoppingCart, Tag
 from .permissions import AuthorOrReadOnly
 from .serializers import (
     IngredientUnitSerializer,
@@ -91,7 +91,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post", "delete"])
     def shopping_cart(self, request, id):
         """Добавить или удалить в корзину."""
-        return self.add_or_remove_ralation(request, id, Shopping_cart)
+        return self.add_or_remove_ralation(request, id, ShoppingCart)
 
     @action(detail=False)
     def download_shopping_cart(self, request):

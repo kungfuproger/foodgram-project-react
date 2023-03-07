@@ -134,7 +134,7 @@ class Favorite(models.Model):
         ]
 
 
-class Shopping_cart(models.Model):
+class ShoppingCart(models.Model):
     """Корзина."""
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,

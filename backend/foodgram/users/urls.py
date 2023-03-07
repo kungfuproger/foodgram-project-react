@@ -5,7 +5,7 @@ from .views import SubscribeViewSet
 urlpatterns = [
     path(
         "users/subscriptions/",
-        SubscribeViewSet.as_view({"get": "subscriptions",}),
+        SubscribeViewSet.as_view({"get": "subscriptions", }),
     ),
     path(
         "users/<int:id>/subscribe/",
