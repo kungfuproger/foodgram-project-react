@@ -134,6 +134,5 @@ dmypy.json
 
 # My ignors
 .vscode/
-migrations/
 media/
 # static/ оставил для ревью чтобы import_csv работал из коробки

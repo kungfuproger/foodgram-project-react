@@ -1,6 +1,28 @@
 from django.contrib import admin
 
-from .models import IngredientAmount, IngredientUnit, Recipe, Tag
+from .models import (
+    IngredientAmount,
+    IngredientUnit,
+    Recipe,
+    Tag,
+    Favorite,
+    ShoppingCart,
+)
+
+
+class IngredientAmountInline(admin.TabularInline):
+    model = IngredientAmount
+    extra = 1
+
+
+class FavoriteInline(admin.TabularInline):
+    model = Favorite
+    extra = 1
+
+
+class ShoppingCartInline(admin.TabularInline):
+    model = ShoppingCart
+    extra = 1
 
 
 class IngredientUnitAdmin(admin.ModelAdmin):
@@ -38,7 +60,6 @@ class RecipeAdmin(admin.ModelAdmin):
                     "name",
                     "image",
                     "text",
-                    "ingredients",
                     "cooking_time",
                 ]
             },
@@ -49,13 +70,12 @@ class RecipeAdmin(admin.ModelAdmin):
                 "fields": [
                     "tags",
                     "favorites_count",
-                    "favorited_users",
-                    "carted_users",
                 ]
             },
         ),
     ]
     readonly_fields = ("favorites_count",)
+    inlines = [IngredientAmountInline, FavoriteInline, ShoppingCartInline]
 
 
 class IngredientAmountAdmin(admin.ModelAdmin):

@@ -3,9 +3,12 @@ import csv
 from django.db.models import BooleanField, Exists, OuterRef, Value
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
+from rest_framework import filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
 
 from users.serializers import CustomRecipeSerializer
 from .models import Favorite, IngredientUnit, Recipe, ShoppingCart, Tag
@@ -19,21 +22,31 @@ from .serializers import (
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     """Представление ингредиентов."""
+
     queryset = IngredientUnit.objects.all()
     serializer_class = IngredientUnitSerializer
+    pagination_class = None
+    permission_classes = (AllowAny,)
 
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     """Представление тегов."""
+
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    pagination_class = None
+    permission_classes = (AllowAny,)
 
 
 class RecipesViewSet(viewsets.ModelViewSet):
     """Представление рецептов."""
+
     lookup_field = "id"
     serializer_class = RecipeSerializer
     permission_classes = (AuthorOrReadOnly,)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    filterset_fields = ("tags__slug",)
+    search_fields = ("ingredients__ingredient_unit__name",)
 
     def get_queryset(self):
         user = self.request.user
@@ -62,9 +75,6 @@ class RecipesViewSet(viewsets.ModelViewSet):
             )
             if is_in_shopping_cart:
                 queryset = queryset.filter(is_in_shopping_cart=True)
-        tags = self.request.query_params.getlist("tags")
-        if tags:
-            queryset = queryset.filter(tags__slug__in=tags).distinct()
         return queryset
 
     def perform_create(self, serializer):

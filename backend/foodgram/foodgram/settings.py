@@ -9,8 +9,9 @@ SECRET_KEY = os.getenv("SECRET_KEY", default=get_random_secret_key())
 
 DEBUG = os.getenv("DEBUG")
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", default="web").split(" ")
-ALLOWED_HOSTS = ["51.250.20.167", "localhost", "kungfu-foodgram.ddns.net"]
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS", default="127.0.0.1"
+).split(" ")
 
 
 INSTALLED_APPS = [
@@ -21,6 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "django_filters",
     "rest_framework.authtoken",
     "djoser",
     "users.apps.UsersConfig",
@@ -60,14 +62,21 @@ WSGI_APPLICATION = "foodgram.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", default="postgres"),
-        "USER": os.getenv("POSTGRES_USER", default="postgres"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="postgres"),
-        "HOST": os.getenv("DB_HOST", default="db"),
-        "PORT": os.getenv("DB_PORT", default=5432),
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
     }
 }
+# 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": os.getenv("POSTGRES_DB", default="postgres"),
+#         "USER": os.getenv("POSTGRES_USER", default="postgres"),
+#         "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="postgres"),
+#         "HOST": os.getenv("DB_HOST", default="db"),
+#         "PORT": os.getenv("DB_PORT", default=5432),
+#     }
+# }
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -97,11 +106,11 @@ USE_L10N = True
 USE_TZ = True
 
 
-STATIC_URL = "/static/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_URL = "/backend_static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "backend_static")
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "/backend_media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "backend_media")
 
 AUTH_USER_MODEL = "users.User"
 
