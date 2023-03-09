@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 
 from .models import User, UserSubscription
@@ -16,17 +17,19 @@ class SubscribeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def subscriptions(self, request):
-        subscribes = request.user.subscriptions.prefetch_related("publisher")
+        paginator = PageNumberPagination()
+        publishers = User.objects.filter(subscribers__subscriber=request.user)
+        paginated_publishers = paginator.paginate_queryset(publishers, request)
         recipes_limit = int(request.query_params.get("recipes_limit"))
         serializer = self.get_serializer(
-            [sub.publisher for sub in subscribes],
+            paginated_publishers,
             many=True,
             context={
                 "request": request,
                 "recipes_limit": recipes_limit,
             },
         )
-        return Response(serializer.data)
+        return paginator.get_paginated_response(serializer.data)
 
     @action(methods=["post", "delete"], detail=True)
     def subscribe(self, request, id):

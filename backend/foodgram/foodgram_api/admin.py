@@ -1,12 +1,12 @@
 from django.contrib import admin
 
 from .models import (
+    Favorite,
     IngredientAmount,
     IngredientUnit,
     Recipe,
-    Tag,
-    Favorite,
     ShoppingCart,
+    Tag,
 )
 
 
@@ -58,18 +58,11 @@ class RecipeAdmin(admin.ModelAdmin):
                 "fields": [
                     "author",
                     "name",
-                    "image",
                     "text",
-                    "cooking_time",
-                ]
-            },
-        ),
-        (
-            "Дполнительно",
-            {
-                "fields": [
-                    "tags",
                     "favorites_count",
+                    "cooking_time",
+                    "image",
+                    "tags",
                 ]
             },
         ),
@@ -85,7 +78,23 @@ class IngredientAmountAdmin(admin.ModelAdmin):
     )
 
 
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "recipe",
+    )
+
+
+class ShoppingCartAdmin(admin.ModelAdmin):
+    list_display = (
+        "user",
+        "recipe",
+    )
+
+
 admin.site.register(IngredientUnit, IngredientUnitAdmin)
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(IngredientAmount, IngredientAmountAdmin)
+admin.site.register(Favorite, FavoriteAdmin)
+admin.site.register(ShoppingCart, ShoppingCartAdmin)

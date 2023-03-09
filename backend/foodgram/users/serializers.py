@@ -78,6 +78,14 @@ class UserRecipesSerializer(CustomUserSerializer):
             "recipes_count",
         )
 
+    def get_is_subscribed(self, obj):
+        user = self.context["request"].user
+        if not user.is_authenticated:
+            return False
+        return UserSubscription.objects.filter(
+            subscriber=user, publisher=obj
+        ).exists()
+
     def get_recipes(self, obj):
         recipes_limit = self.context.get("recipes_limit")
         if recipes_limit:
