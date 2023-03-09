@@ -31,6 +31,7 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
         if search_query:
             search_query = unquote(search_query)
             queryset = queryset.filter(name__icontains=search_query)
+
         return queryset
 
 
@@ -78,6 +79,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         tags = self.request.query_params.getlist("tags")
         if tags:
             queryset = queryset.filter(tags__slug__in=tags).distinct()
+
         return queryset
 
     def perform_create(self, serializer):
@@ -114,15 +116,15 @@ class RecipesViewSet(viewsets.ModelViewSet):
         for cart in carts:
             recipe = cart.recipe
             for ingredient in recipe.ingredients.all():
-                ingredient_id = ingredient.ingredient_unit.id
-                if ingredient_id in ingredient_dict:
-                    ingredient_dict[ingredient_id][
+                ingredient_unit = ingredient.ingredient_unit
+                if ingredient_unit.id in ingredient_dict:
+                    ingredient_dict[ingredient_unit.id][
                         "amount"
                     ] += ingredient.amount
                 else:
-                    ingredient_dict[ingredient_id] = {
-                        "name": ingredient.ingredient_unit.name,
-                        "measurement_unit": ingredient.ingredient_unit.measurement_unit,
+                    ingredient_dict[ingredient_unit.id] = {
+                        "name": ingredient_unit.name,
+                        "measurement_unit": ingredient_unit.measurement_unit,
                         "amount": ingredient.amount,
                     }
         ingredients = sorted(
@@ -131,7 +133,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         response = HttpResponse(
             content_type="text/plain",
             headers={
-                "Content-Disposition": "attachment; filename='shopping_cart.txt'"
+                "Content-Disposition": "attachment; filename='my-cart.txt'"
             },
         )
         writer = csv.writer(response)
