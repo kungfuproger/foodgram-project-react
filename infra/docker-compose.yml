@@ -2,11 +2,16 @@ version: '3.3'
 services:
 
   frontend:
+    container_name: frontend
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
     image: kungfuproger/foodgram_frontend:latest
     volumes:
       - ./frontend/:/app/result_build/
 
   db:
+    container_name: db
     image: postgres:13.0-alpine
     volumes:
       - db_data:/var/lib/postgresql/data
@@ -17,6 +22,10 @@ services:
       - "5432:5432"
 
   backend:
+    container_name: backend
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
     image: kungfuproger/foodgram:latest
     restart: always
     volumes:
@@ -29,6 +38,7 @@ services:
     command: gunicorn --bind 0:8000 foodgram.wsgi:application
 
   nginx:
+    container_name: nginx
     image: nginx:1.21.3-alpine
     ports:
       - "80:80"

@@ -5,6 +5,13 @@
 - а так же создавать собственные используя обширную базу ингредиентов
 - добавлять рецепты в корзину, а затем рапечатать список всех необходимых для них ингредиентов
 
+
+### ENV файл
+
+1. Переименуйте файл `infra/.env.dist` в `.env`.
+2. При необходимости установите собственные значения параметров в файле.
+
+
 ### Запуск приложения на сервере
 
 1. Клонируйте этот репозиторий на сервер.
@@ -23,24 +30,18 @@ docker-compose up -d
 
 5. Создать суперпользователя для админ-панели.
 ```
-docker-compose exec web python manage.py createsuperuser - создать суперпользователя
+docker-compose exec backend python manage.py createsuperuser - создать суперпользователя
 ```
 
 6. Загрузить в БД тестовые данные.
 ```
-docker-compose exec web python manage.py loaddata fixtures.json
+docker-compose exec backend python manage.py loaddata fixtures.json
 ```
 
-7. Выгрузить из БД тестовые данные.
+7. Выгрузить из БД данные.
 ```
-docker-compose exec web python manage.py dumpdata fixtures.json
+docker-compose exec backend python manage.py dumpdata > <data_name>.json
 ```
-
-### ENV файл
-
-1. Переименуйте файл `infra/.env.dist` в `.env`.
-2. При необходимости установите собственные значения параметров в файле.
-
 
 ### ЭНДПОИНТЫ
 
