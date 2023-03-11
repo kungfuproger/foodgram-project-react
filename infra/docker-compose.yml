@@ -2,9 +2,6 @@ version: '3.3'
 services:
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
     image: kungfuproger/foodgram_frontend:latest
     volumes:
       - ./frontend/:/app/result_build/
