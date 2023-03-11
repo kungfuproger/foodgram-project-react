@@ -31,6 +31,8 @@ class Base64ImageField(serializers.ImageField):
     def to_internal_value(self, data):
         if isinstance(data, str) and data.startswith("data:image"):
             formatstr, imgstr = data.split(";base64,")
+            if not imgstr:
+                return None
             ext = formatstr.split("/")[-1]
             data = ContentFile(base64.b64decode(imgstr), name="image." + ext)
             return super().to_internal_value(data)

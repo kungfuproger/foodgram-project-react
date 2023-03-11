@@ -16,7 +16,7 @@ services:
     ports:
       - "5432:5432"
 
-  backend:
+  web:
     image: kungfuproger_web/foodgram:latest
     restart: always
     volumes:
@@ -38,7 +38,7 @@ services:
       - static_volume:/var/html/backend_static/
       - media_volume:/var/html/backend_media/
     depends_on:
-      - backend
+      - web
 
 volumes:
   db_data:
