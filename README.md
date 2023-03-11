@@ -40,3 +40,4 @@ docker-compose exec web python manage.py loaddata fixtures.json
 ### ЭНДПОИНТЫ
 
 1. `api/docs/` - документация по API проекта.
+2. 
