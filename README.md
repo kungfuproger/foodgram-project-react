@@ -1,5 +1,6 @@
 # Foodgram
 Приложение представляет из себя харинлище рецептов пользователей.
+
 Вы можете: 
 - подписываться на других пользователей, добавлять рецепты в избранное
 - а так же создавать собственные используя обширную базу ингредиентов
@@ -17,6 +18,7 @@
 1. Клонируйте этот репозиторий на сервер.
 
 2. Для запуска потребуется установленное приложение Docker, а так же его инструмент Docker Compose.
+
 Ссылка для загрузки: https://www.docker.com/get-started/
 
 3. Выполние настройки БД (см. ENV файл).
@@ -33,7 +35,7 @@ docker-compose up -d
 docker-compose exec backend python manage.py createsuperuser - создать суперпользователя
 ```
 
-6. Загрузить в БД тестовые данные.
+6. Загрузить в БД подготовленные данные.
 ```
 docker-compose exec backend python manage.py loaddata fixtures.json
 ```
@@ -46,4 +48,4 @@ docker-compose exec backend python manage.py dumpdata > <data_name>.json
 ### ЭНДПОИНТЫ
 
 1. `admin/` - админ-панель Django.
-2. `api/docs/` - документация по API проекта.
+2. `api/docs/` - документация Redoc по API проекта.
