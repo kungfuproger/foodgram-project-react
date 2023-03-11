@@ -65,7 +65,7 @@ jobs:
         script: |
           sudo docker pull kungfuproger/foodgram:latest
           sudo docker-compose stop
-          sudo docker-compose rm backend
+          sudo docker-compose rm web
           touch .env
           echo DEBUG=${{ secrets.DEBUG }} > .env
           echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env

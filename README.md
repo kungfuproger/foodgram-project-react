@@ -14,22 +14,27 @@
 
 3. Выполние настройки БД (см. ENV файл).
 
-4. Запустите контейнер Docker
+4. Запустите контейнер Docker.
 ```
 # Из директории infra/
 docker-compose up -d
 ```
-5. Создать суперпользователя для админ-панели
+Сайт будет доступен по адресам указанным в ALLOWED_HOSTS (см. ENV файл).
+
+5. Создать суперпользователя для админ-панели.
 ```
 docker-compose exec web python manage.py createsuperuser - создать суперпользователя
 ```
 
-6. Так можно загрузить в БД тестовые данные
+6. Загрузить в БД тестовые данные.
 ```
 docker-compose exec web python manage.py loaddata fixtures.json
 ```
 
-7. Сайт будет доступен по адресам указанным в ALLOWED_HOSTS (см. ENV файл).
+7. Выгрузить из БД тестовые данные.
+```
+docker-compose exec web python manage.py dumpdata fixtures.json
+```
 
 ### ENV файл
 
@@ -39,5 +44,5 @@ docker-compose exec web python manage.py loaddata fixtures.json
 
 ### ЭНДПОИНТЫ
 
-1. `api/docs/` - документация по API проекта.
-2. 
+1. `admin/` - админ-панель Django.
+2. `api/docs/` - документация по API проекта.

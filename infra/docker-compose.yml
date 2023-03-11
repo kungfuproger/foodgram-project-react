@@ -23,7 +23,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    image: kungfuproger_web/foodgram_web:latest
+    image: kungfuproger/foodgram_web:latest
     restart: always
     volumes:
       - static_volume:/app/backend_static/
@@ -32,6 +32,7 @@ services:
       - db
     env_file:
       - ./.env
+
   nginx:
     image: nginx:1.21.3-alpine
     ports:
