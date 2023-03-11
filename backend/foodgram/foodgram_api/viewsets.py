@@ -10,7 +10,14 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from users.serializers import CustomRecipeSerializer
-from .models import Favorite, IngredientUnit, Recipe, ShoppingCart, Tag
+from .models import (
+    Favorite,
+    IngredientAmount,
+    IngredientUnit,
+    Recipe,
+    ShoppingCart,
+    Tag,
+)
 from .permissions import AuthorOrReadOnly
 from .serializers import (
     IngredientUnitSerializer,
@@ -88,7 +95,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         serializer.save(author=self.request.user)
 
-    def add_or_remove_ralation(self, request, id, relation_model):
+    def add_or_remove_relation(self, request, id, relation_model):
         recipe = get_object_or_404(Recipe, id=id)
         obj, _ = relation_model.objects.get_or_create(
             user=request.user, recipe=recipe
@@ -101,33 +108,33 @@ class RecipesViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post", "delete"])
     def favorite(self, request, id):
         """Добавить или удалить в избранное."""
-        return self.add_or_remove_ralation(request, id, Favorite)
+        return self.add_or_remove_relation(request, id, Favorite)
 
     @action(detail=True, methods=["post", "delete"])
     def shopping_cart(self, request, id):
         """Добавить или удалить в корзину."""
-        return self.add_or_remove_ralation(request, id, ShoppingCart)
+        return self.add_or_remove_relation(request, id, ShoppingCart)
 
     @action(detail=False)
     def download_shopping_cart(self, request):
         """Скачать список ингредиентов."""
-        carts = request.user.carts.all()
+        ingeredients = IngredientAmount.objects.filter(
+            recipe__in_carts__user=request.user
+        ).select_related("ingredient_unit")
         ingredient_dict = {}
-        for cart in carts:
-            recipe = cart.recipe
-            for ingredient in recipe.ingredients.all():
-                ingredient_unit = ingredient.ingredient_unit
-                if ingredient_unit.id in ingredient_dict:
-                    ingredient_dict[ingredient_unit.id][
-                        "amount"
-                    ] += ingredient.amount
-                else:
-                    ingredient_dict[ingredient_unit.id] = {
-                        "name": ingredient_unit.name,
-                        "measurement_unit": ingredient_unit.measurement_unit,
-                        "amount": ingredient.amount,
-                    }
-        ingredients = sorted(
+        for ingredient in ingeredients:
+            ingredient_unit = ingredient.ingredient_unit
+            if ingredient_unit.id in ingredient_dict:
+                ingredient_dict[ingredient_unit.id][
+                    "amount"
+                ] += ingredient.amount
+            else:
+                ingredient_dict[ingredient_unit.id] = {
+                    "name": ingredient_unit.name,
+                    "measurement_unit": ingredient_unit.measurement_unit,
+                    "amount": ingredient.amount,
+                }
+        ingredients_data = sorted(
             list(ingredient_dict.values()), key=lambda x: x["name"]
         )
         response = HttpResponse(
@@ -139,7 +146,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         writer = csv.writer(response)
         writer.writerow(["Список покупок:"])
         n = int()
-        for ingredient in ingredients:
+        for ingredient in ingredients_data:
             n += 1
             name = ingredient["name"].capitalize()
             measurement_unit = ingredient["measurement_unit"]

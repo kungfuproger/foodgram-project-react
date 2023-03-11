@@ -35,14 +35,22 @@ jobs:
       with:
         username: kungfuproger
         password: qwerty1337qaz2468
-    - name: Push to Docker Hub
+    - name: Push (web) to Docker Hub
       uses: docker/build-push-action@v2
       with:
         username: kungfuproger
         password: qwerty1337qaz2468
         context: ./backend/
         push: true
-        tags: kungfuproger/foodgram:latest
+        tags: kungfuproger/foodgram_web:latest
+    - name: Push (fronend) to Docker Hub 
+      uses: docker/build-push-action@v2
+      with:
+        username: kungfuproger
+        password: qwerty1337qaz2468
+        context: ./frontend/
+        push: true
+        tags: kungfuproger/foodgram_frontend:latest
   deploy:
     runs-on: ubuntu-latest
     needs: build_and_push_to_docker_hub

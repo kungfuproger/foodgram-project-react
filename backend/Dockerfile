@@ -3,4 +3,4 @@ WORKDIR /app
 COPY ./requirements.txt ./
 RUN pip3 install -r requirements.txt --no-cache-dir
 COPY ./foodgram ./
-RUN python manage.py makemigrations
+ENTRYPOINT ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --no-input"]
