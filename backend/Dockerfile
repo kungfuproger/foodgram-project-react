@@ -3,5 +3,7 @@ WORKDIR /app
 COPY ./requirements.txt ./
 RUN pip3 install -r requirements.txt --no-cache-dir
 COPY ./foodgram ./
-RUN python manage.py migrate && python manage.py collectstatic --no-input
-ENTRYPOINT ["gunicorn", "--bind", "0:8000", "foodgram.wsgi:application"]
+COPY ./docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["gunicorn", "--bind", "0:8000", "foodgram.wsgi:application"]
