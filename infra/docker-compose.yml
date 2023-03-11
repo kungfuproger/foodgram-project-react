@@ -5,7 +5,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    image: kungfuproger/foodgram_frontend:latest
     volumes:
       - ./frontend/:/app/result_build/
 
@@ -19,11 +18,8 @@ services:
     ports:
       - "5432:5432"
 
-  web:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    image: kungfuproger/foodgram_web:latest
+  backend:
+    image: kungfuproger/foodgram:latest
     restart: always
     volumes:
       - static_volume:/app/backend_static/
@@ -32,6 +28,8 @@ services:
       - db
     env_file:
       - ./.env
+    command: >
+      bash -c "python manage.py migrate && python manage.py collectstatic --no-input && gunicorn --bind 0:8000 foodgram.wsgi:application"
 
   nginx:
     image: nginx:1.21.3-alpine
@@ -44,7 +42,7 @@ services:
       - static_volume:/var/html/backend_static/
       - media_volume:/var/html/backend_media/
     depends_on:
-      - web
+      - backend
 
 volumes:
   db_data:
