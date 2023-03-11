@@ -28,8 +28,7 @@ services:
       - db
     env_file:
       - ./.env
-    command: >
-      bash -c "gunicorn --bind 0:8000 foodgram.wsgi:application"
+    command: gunicorn --bind 0:8000 foodgram.wsgi:application
 
   nginx:
     image: nginx:1.21.3-alpine
