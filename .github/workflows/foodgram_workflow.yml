@@ -65,7 +65,7 @@ jobs:
         script: |
           sudo docker pull kungfuproger/foodgram:latest
           sudo docker-compose stop
-          sudo docker-compose rm web
+          sudo docker-compose rm backend
           touch .env
           echo DEBUG=${{ secrets.DEBUG }} > .env
           echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
@@ -74,4 +74,4 @@ jobs:
           echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
           echo DB_HOST=${{ secrets.DB_HOST }} >> .env
           echo DB_PORT=${{ secrets.DB_PORT }} >> .env
-          sudo docker-compose up -d db web nginx
+          sudo docker-compose up -d db backend nginx
