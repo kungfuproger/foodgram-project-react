@@ -5,6 +5,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    image: kungfuproger/foodgram_frontend:latest
     volumes:
       - ./frontend/:/app/result_build/
 

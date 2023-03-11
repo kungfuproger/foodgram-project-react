@@ -42,7 +42,7 @@ jobs:
         password: qwerty1337qaz2468
         context: ./backend/
         push: true
-        tags: kungfuproger/foodgram_web:latest
+        tags: kungfuproger/foodgram:latest
     - name: Push (fronend) to Docker Hub 
       uses: docker/build-push-action@v2
       with:
