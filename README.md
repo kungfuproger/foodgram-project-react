@@ -9,21 +9,19 @@
 
 1. Клонируйте этот репозиторий на сервер.
 
-2. Для запуска потребуется установленное приложение Docker.
+2. Для запуска потребуется установленное приложение Docker, а так же его инструмент Docker Compose.
 Ссылка для загрузки: https://www.docker.com/get-started/
 
-3. Выполние настройки БД (Раздел ниже)
+3. Выполние настройки БД (см. ENV файл).
 
-4. Строим контейнер Docker
+4. Запустите контейнер Docker
 ```
 # Из директории infra/
-docker-compose up -d --build
+docker-compose up -d
 ```
-5. Подгатавливаем элементы Django
+5. Создать суперпользователя для админ-панели
 ```
-docker-compose exec web python manage.py migrate
-docker-compose exec web python manage.py createsuperuser
-docker-compose exec web python manage.py collectstatic --no-input
+docker-compose exec web python manage.py createsuperuser - создать суперпользователя
 ```
 
 6. Так можно загрузить в БД тестовые данные
@@ -31,71 +29,14 @@ docker-compose exec web python manage.py collectstatic --no-input
 docker-compose exec web python manage.py loaddata fixtures.json
 ```
 
-7. Сайт доступен по адресу http://localhost/.
+7. Сайт будет доступен по адресам указанным в ALLOWED_HOSTS (см. ENV файл).
 
-### Конфигурация БД 
+### ENV файл
 
 1. Переименуйте файл `infra/.env.dist` в `.env`.
 2. При необходимости установите собственные значения параметров в файле.
 
-### Регистрация нового пользователя
-Получить код подтверждения на переданный email.
-Права доступа: Доступно без токена.
-Использовать имя 'me' в качестве username запрещено.
-Поля email и username должны быть уникальными.
 
-*   `POST: /api/v1/auth/signup/
-Content-Type: application/json
+### ЭНДПОИНТЫ
 
-        {
-        "email": "string",
-        "username": "string"
-        }
-
-
-### Получение JWT-токена в обмен на username и confirmation code.
-    
-*   `POST: /api/v1/auth/token/
-Content-Type: application/json
-
-        {
-        "username": "string",
-        "confirmation_code": "string"
-        }
-
-
-### API
-# Эндпоинты:
- CATEGORIES
- 
-`/api/v1/categories/`
-
- GENRES
- 
-`/api/v1/genres/`
-
- TITLES
- 
-`/api/v1/titles/`
-
-`/api/v1/titles/{titles_id}/`
-
- REVIEWS
- 
-`/api/v1/titles/{title_id}/reviews/`
-
-`/api/v1/titles/{title_id}/reviews/{review_id}/`
-
- COMMENTS
- 
-`/api/v1/titles/{title_id}/reviews/{review_id}/comments/`
-
-`/api/v1/titles/{title_id}/reviews/{review_id}/comments/{comment_id}/`
-
- USERS
- 
-`/api/v1/users/`
-
-`/api/v1/users/{username}/`
-
-Полная информация по запросам доступна в документации: `/redoc/`
+1. `api/docs/` - документация по API проекта.
