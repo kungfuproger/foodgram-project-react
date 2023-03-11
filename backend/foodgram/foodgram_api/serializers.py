@@ -33,7 +33,8 @@ class Base64ImageField(serializers.ImageField):
             formatstr, imgstr = data.split(";base64,")
             ext = formatstr.split("/")[-1]
             data = ContentFile(base64.b64decode(imgstr), name="image." + ext)
-        return super().to_internal_value(data)
+            return super().to_internal_value(data)
+        return None
 
 
 class CustomTagsField(TagSerializer):
