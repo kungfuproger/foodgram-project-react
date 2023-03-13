@@ -98,12 +98,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredients = data.get("ingredients")
         units = []
         for ingredient in ingredients:
-            id = ingredient.get("ingredient_unit")
-            if id in units:
-                unit = IngredientUnit.objects.get(id=id)
+            unit = ingredient.get("ingredient_unit")
+            if unit in units:
                 error_msg = f"Ингредиент {unit.name} повторяется несколько раз"
                 raise serializers.ValidationError({"ingredients": error_msg})
-            units.append(id)
+            units.append(unit)
         return data
 
     def create(self, validated_data):
