@@ -8,7 +8,7 @@ from .models import IngredientAmount, IngredientUnit, Recipe, Tag
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """Сериализатор объектов Tag, для TagsViewSet."""                     
+    """Сериализатор объектов Tag, для TagsViewSet."""
     class Meta:
         model = Tag
         fields = ("id", "name", "color", "slug")

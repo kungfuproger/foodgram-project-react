@@ -104,7 +104,9 @@ class RecipesViewSet(viewsets.ModelViewSet):
         if request._request.method == "DELETE":
             obj.delete()
             return Response(status=HTTPStatus.NO_CONTENT)
-        return Response(CustomRecipeSerializer(recipe).data, status=HTTPStatus.CREATED)
+        return Response(
+            CustomRecipeSerializer(recipe).data, status=HTTPStatus.CREATED
+        )
 
     @action(detail=True, methods=["post", "delete"])
     def favorite(self, request, id):
