@@ -67,12 +67,4 @@ jobs:
           sudo docker pull kungfuproger/foodgram:latest
           sudo docker-compose stop
           sudo docker-compose rm backend
-          touch .env
-          echo DEBUG=${{ secrets.DEBUG }} > .env
-          echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
-          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-          echo DB_HOST=${{ secrets.DB_HOST }} >> .env
-          echo DB_PORT=${{ secrets.DB_PORT }} >> .env
           sudo docker-compose up -d db backend nginx
