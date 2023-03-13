@@ -1,5 +1,6 @@
 import csv
 from urllib.parse import unquote
+from http import HTTPStatus
 
 from django.db.models import BooleanField, Exists, OuterRef, Value
 from django.http import HttpResponse
@@ -102,8 +103,8 @@ class RecipesViewSet(viewsets.ModelViewSet):
         )
         if request._request.method == "DELETE":
             obj.delete()
-            return Response()
-        return Response(CustomRecipeSerializer(recipe).data, status=201)
+            return Response(status=HTTPStatus.NO_CONTENT)
+        return Response(CustomRecipeSerializer(recipe).data, status=HTTPStatus.CREATED)
 
     @action(detail=True, methods=["post", "delete"])
     def favorite(self, request, id):

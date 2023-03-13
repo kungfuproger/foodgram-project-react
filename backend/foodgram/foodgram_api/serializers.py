@@ -8,7 +8,7 @@ from .models import IngredientAmount, IngredientUnit, Recipe, Tag
 
 
 class TagSerializer(serializers.ModelSerializer):
-    """Сериализатор объектов Tag, для TagsViewSet."""
+    """Сериализатор объектов Tag, для TagsViewSet."""                     
     class Meta:
         model = Tag
         fields = ("id", "name", "color", "slug")
@@ -93,6 +93,18 @@ class RecipeSerializer(serializers.ModelSerializer):
             "text",
             "cooking_time",
         )
+
+    def validate(self, data):
+        ingredients = data.get("ingredients")
+        units = []
+        for ingredient in ingredients:
+            id = ingredient.get("ingredient_unit")
+            if id in units:
+                unit = IngredientUnit.objects.get(id=id)
+                error_msg = f"Ингредиент {unit.name} повторяется несколько раз"
+                raise serializers.ValidationError({"ingredients": error_msg})
+            units.append(id)
+        return data
 
     def create(self, validated_data):
         ingredients = validated_data.pop("ingredients")

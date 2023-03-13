@@ -35,7 +35,6 @@ services:
       - db
     env_file:
       - ./.env
-    command: gunicorn --bind 0:8000 foodgram.wsgi:application
 
   nginx:
     container_name: nginx
@@ -45,7 +44,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./frontend/build:/usr/share/nginx/html/
-      - ./docs/:/usr/share/nginx/html/api/docs/
+      - ../docs/:/usr/share/nginx/html/api/docs/
       - static_volume:/var/html/backend_static/
       - media_volume:/var/html/backend_media/
     depends_on:
