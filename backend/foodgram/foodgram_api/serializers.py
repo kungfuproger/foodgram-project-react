@@ -68,12 +68,6 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientAmount
         fields = ("id", "name", "measurement_unit", "amount")
-    
-    def validate_amount(self, data):
-        if data < 1:
-            error_msg = "Убедитесь, что это значение больше либо равно 1."
-            raise serializers.ValidationError(error_msg)
-        return data
 
 
 class RecipeSerializer(serializers.ModelSerializer):
