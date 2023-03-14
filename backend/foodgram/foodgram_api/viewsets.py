@@ -124,7 +124,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         """Скачать список ингредиентов."""
         ingeredients = IngredientUnit.objects.filter(
-            ingrdients__recipe__in_carts__user=request.user
+            ingredientamount__recipe__in_carts__user=request.user
         ).annotate(amount=OuterRef("amount"))
         ingredient_dict = {}
         for ingredient in ingeredients:
