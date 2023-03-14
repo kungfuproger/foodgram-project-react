@@ -1,7 +1,6 @@
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from django.db import models
-
-from .validators import RuMinValueValidator
 
 
 class IngredientUnit(models.Model):
@@ -63,7 +62,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(Tag, verbose_name="Теги")
     cooking_time = models.PositiveSmallIntegerField(
         "Время приготовления в минутах",
-        validators=[RuMinValueValidator(1)],
+        validators=[MinValueValidator(1)],
         blank=False,
         null=False,
     )
@@ -92,7 +91,7 @@ class IngredientAmount(models.Model):
         IngredientUnit, on_delete=models.CASCADE
     )
     amount = models.PositiveSmallIntegerField(
-        validators=[RuMinValueValidator(1)],
+        validators=[MinValueValidator(1)],
         blank=False,
         null=False,
         verbose_name="Сколько",

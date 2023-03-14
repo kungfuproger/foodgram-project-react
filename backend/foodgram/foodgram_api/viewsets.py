@@ -125,7 +125,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         """Скачать список ингредиентов."""
         ingeredients = IngredientUnit.objects.filter(
             ingredientamount__recipe__in_carts__user=request.user
-        ).annotate(amount=OuterRef("amount"))
+        ).annotate(amount=OuterRef(OuterRef("amount")))
         ingredient_dict = {}
         for ingredient in ingeredients:
             if ingredient.id in ingredient_dict:
