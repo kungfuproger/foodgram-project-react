@@ -99,7 +99,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         for ingredient in data:
             unit = ingredient.get("ingredient_unit")
             if unit in ingredients:
-                error_msg = f"Ингредиент {unit.name} повторяется несколько раз"
+                error_msg = "Обязательное поле."
                 raise serializers.ValidationError(error_msg)
             ingredients.append(unit)
         return data
