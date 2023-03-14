@@ -28,7 +28,6 @@ from .serializers import (
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     """Представление ингредиентов."""
-
     queryset = IngredientUnit.objects.all()
     serializer_class = IngredientUnitSerializer
     pagination_class = None
@@ -45,7 +44,6 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     """Представление тегов."""
-
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
@@ -54,7 +52,6 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipesViewSet(viewsets.ModelViewSet):
     """Представление рецептов."""
-
     lookup_field = "id"
     serializer_class = RecipeSerializer
     permission_classes = (AuthorOrReadOnly,)
@@ -125,7 +122,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         """Скачать список ингредиентов."""
         ingeredients = IngredientUnit.objects.filter(
             ingredientamount__recipe__in_carts__user=request.user
-        ).annotate(amount=Sum('ingredientamount__amount')).order_by("-name")
+        ).annotate(amount=Sum('ingredientamount__amount')).order_by("name")
         response = HttpResponse(
             content_type="text/plain",
             headers={
