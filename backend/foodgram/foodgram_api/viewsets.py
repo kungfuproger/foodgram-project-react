@@ -13,7 +13,6 @@ from rest_framework.response import Response
 from users.serializers import CustomRecipeSerializer
 from .models import (
     Favorite,
-    IngredientAmount,
     IngredientUnit,
     Recipe,
     ShoppingCart,
