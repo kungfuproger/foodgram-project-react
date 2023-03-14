@@ -60,7 +60,7 @@ class Recipe(models.Model):
     )
     text = models.TextField("Описание", blank=False, null=False)
     tags = models.ManyToManyField(Tag, verbose_name="Теги")
-    cooking_time = models.IntegerField(
+    cooking_time = models.PositiveSmallIntegerField(
         "Время приготовления в минутах",
         validators=[MinValueValidator(1)],
         blank=False,
@@ -90,7 +90,7 @@ class IngredientAmount(models.Model):
     ingredient_unit = models.ForeignKey(
         IngredientUnit, on_delete=models.CASCADE
     )
-    amount = models.IntegerField(
+    amount = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1)],
         blank=False,
         null=False,

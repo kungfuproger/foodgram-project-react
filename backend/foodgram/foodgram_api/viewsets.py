@@ -29,6 +29,7 @@ from .serializers import (
 
 class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
     """Представление ингредиентов."""
+
     queryset = IngredientUnit.objects.all()
     serializer_class = IngredientUnitSerializer
     pagination_class = None
@@ -45,6 +46,7 @@ class IngredientsViewSet(viewsets.ReadOnlyModelViewSet):
 
 class TagsViewSet(viewsets.ReadOnlyModelViewSet):
     """Представление тегов."""
+
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     pagination_class = None
@@ -53,6 +55,7 @@ class TagsViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RecipesViewSet(viewsets.ModelViewSet):
     """Представление рецептов."""
+
     lookup_field = "id"
     serializer_class = RecipeSerializer
     permission_classes = (AuthorOrReadOnly,)
@@ -121,20 +124,19 @@ class RecipesViewSet(viewsets.ModelViewSet):
     @action(detail=False)
     def download_shopping_cart(self, request):
         """Скачать список ингредиентов."""
-        ingeredients = IngredientAmount.objects.filter(
-            recipe__in_carts__user=request.user
-        ).select_related("ingredient_unit")
+        ingeredients = IngredientUnit.objects.filter(
+            ingrdients__recipe__in_carts__user=request.user
+        ).annotate(amount=OuterRef("amount"))
         ingredient_dict = {}
         for ingredient in ingeredients:
-            ingredient_unit = ingredient.ingredient_unit
-            if ingredient_unit.id in ingredient_dict:
-                ingredient_dict[ingredient_unit.id][
+            if ingredient.id in ingredient_dict:
+                ingredient_dict[ingredient.id][
                     "amount"
                 ] += ingredient.amount
             else:
-                ingredient_dict[ingredient_unit.id] = {
-                    "name": ingredient_unit.name,
-                    "measurement_unit": ingredient_unit.measurement_unit,
+                ingredient_dict[ingredient.id] = {
+                    "name": ingredient.name,
+                    "measurement_unit": ingredient.measurement_unit,
                     "amount": ingredient.amount,
                 }
         ingredients_data = sorted(
