@@ -2,7 +2,7 @@ import csv
 from urllib.parse import unquote
 from http import HTTPStatus
 
-from django.db.models import BooleanField, Exists, OuterRef, Value
+from django.db.models import BooleanField, Exists, OuterRef, Sum, Value
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from users.serializers import CustomRecipeSerializer
 from .models import (
     Favorite,
+    IngredientAmount,
     IngredientUnit,
     Recipe,
     ShoppingCart,
@@ -125,22 +126,7 @@ class RecipesViewSet(viewsets.ModelViewSet):
         """Скачать список ингредиентов."""
         ingeredients = IngredientUnit.objects.filter(
             ingredientamount__recipe__in_carts__user=request.user
-        ).annotate(amount=OuterRef(OuterRef("amount")))
-        ingredient_dict = {}
-        for ingredient in ingeredients:
-            if ingredient.id in ingredient_dict:
-                ingredient_dict[ingredient.id][
-                    "amount"
-                ] += ingredient.amount
-            else:
-                ingredient_dict[ingredient.id] = {
-                    "name": ingredient.name,
-                    "measurement_unit": ingredient.measurement_unit,
-                    "amount": ingredient.amount,
-                }
-        ingredients_data = sorted(
-            list(ingredient_dict.values()), key=lambda x: x["name"]
-        )
+        ).annotate(amount=Sum('ingredientamount__amount')).order_by("-name")
         response = HttpResponse(
             content_type="text/plain",
             headers={
@@ -150,10 +136,10 @@ class RecipesViewSet(viewsets.ModelViewSet):
         writer = csv.writer(response)
         writer.writerow(["Список покупок:"])
         n = int()
-        for ingredient in ingredients_data:
+        for ingredient in ingeredients:
             n += 1
-            name = ingredient["name"].capitalize()
-            measurement_unit = ingredient["measurement_unit"]
-            amount = ingredient["amount"]
+            name = ingredient.name.capitalize()
+            measurement_unit = ingredient.measurement_unit
+            amount = ingredient.amount
             writer.writerow([f"{n}. {name} ({measurement_unit}) - {amount}"])
         return response
