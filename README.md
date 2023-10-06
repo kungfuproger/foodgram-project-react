@@ -32,7 +32,7 @@ docker-compose up -d
 
 Рекомендуется также:
 
-4. Создать суперпользователя для админ-панели.
+4. Создать суперпользователя.
 ```
 docker-compose exec backend python manage.py createsuperuser 
 ```
