@@ -33,11 +33,11 @@ docker-compose up -d
 Рекомендуется также:
 
 4. Создать суперпользователя для админ-панели.
-```bash
+```
 docker-compose exec backend python manage.py createsuperuser 
 ```
 
 5. Загрузить в БД подготовленные данные.
-```bash
+```
 docker-compose exec backend python manage.py loaddata fixtures.json
 ```
